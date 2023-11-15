@@ -1,11 +1,15 @@
 <template>
   <v-app>
     <v-main>
-      <HelloWorld />
+      <v-container class="fill-height flex flex-column justify-space-between">
+        <PackagesTable />
+        <TheFooter />
+      </v-container>
     </v-main>
   </v-app>
 </template>
 
 <script setup>
-  import HelloWorld from '@/components/HelloWorld.vue'
+import TheFooter from '@/components/layout/TheFooter'
+import PackagesTable from '@/components/packages/PackagesTable.vue'
 </script>
