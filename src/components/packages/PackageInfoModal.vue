@@ -1,20 +1,20 @@
 <script setup>
   import { useStore } from 'vuex'
   import { computed } from 'vue';
+import { APP_MODALS } from '@/constants';
 
   const store = useStore()
   const selectedPackage = computed(() => store.getters.getSelectedPackage )
 
   const handleDeletePackage = () => {
     store.dispatch('deletePackage')
-    store.dispatch('closeModal')
+    store.dispatch('closeModal', APP_MODALS.packageInfoModal)
   }
 
   const handleClose = () => {
-    store.dispatch('closeModal')
+    store.dispatch('closeModal', APP_MODALS.packageInfoModal)
     store.dispatch('setSelectedPackage', null)
   }
-
 </script>
 
 <template>

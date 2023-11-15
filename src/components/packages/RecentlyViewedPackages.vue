@@ -15,12 +15,13 @@
 </template>
 
 <script setup>
-  import { useStore } from 'vuex'
+  import { APP_MODALS } from '@/constants';
+import { useStore } from 'vuex'
 
   const store = useStore()
   const handleSelectPackage = (selectedPackage) => {
     store.dispatch('setSelectedPackage', selectedPackage)
-    store.dispatch('openModal')
+    store.dispatch('openModal', APP_MODALS.packageInfoModal)
   }
 </script>
 
