@@ -16,80 +16,115 @@
         density="compact"
         />
       </template>
-
-    <v-data-table
-    :headers="headers"
-    :items="items"
-    :search="search"
-    hover
-    density="compact"
-    class="table"
-    >
-    <template v-slot:body="{ items }">
-      <tr
-        v-for="item in items"
-        :key="item.id"
-        @click="() => handleSelectPackage(item)"
-        class="tr"
+      <v-data-table
+        :headers="headers"
+        :items="allPackages"
+        :search="search"
+        hover
+        density="compact"
+        class="table"
       >
-        <td>
-          {{ item.name }}
-        </td>
-        <td v-if="item.type === 'gh'">
-          <v-icon icon="mdi-github" size="18" class="ml-2"></v-icon>
-        </td>
-        <td v-if="item.type === 'npm'">
-          <v-icon icon="mdi-npm" size="32"></v-icon>
-        </td>
-      </tr>
-  </template>
-
-  </v-data-table>
-  </v-card>
-</v-container>
+        <template v-slot:body="{ items }">
+          <tr
+            v-for="item in items"
+            :key="item.name"
+            @click="() => handleSelectPackage(item)"
+            class="tr"
+          >
+            <td>
+              {{ item.name }}
+            </td>
+            <td v-if="item.type === 'gh'">
+              <v-icon icon="mdi-github" size="18" class="ml-2"></v-icon>
+            </td>
+            <td v-if="item.type === 'npm'">
+              <v-icon icon="mdi-npm" size="32"></v-icon>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+    </v-card>
+  </v-container>
 </template>
 
-<script setup>
-import { APP_MODALS } from '@/constants';
-import { ref, onMounted } from 'vue';
-import { useStore } from 'vuex'
+<script>
+import { APP_MODALS } from '@/constants'
+import { mapActions, mapGetters } from 'vuex'
 
-const items = ref()
-const store = useStore()
+export default {
+  name: 'PackagesTable',
 
-  const test = async () => {
-    const res = await fetch('https://data.jsdelivr.com/v1/stats/packages')
-    const data = await res.json()
-    items.value = data
-  }
+  data() {
+    return {
+      packages: [],
+      headers: [
+        {
+          align: 'start',
+          key: 'name',
+          title: 'Name',
+        },
+        { key: 'type', title: 'Type' },
+      ],
+      search: '',
+    }
+  }, // data
 
-  onMounted(() => test())
+  async mounted() {
+    this.showLoader()
+    await this.loadAllPackages()
+    this.hideLoader()
+  }, // mounted
 
-  const handleSelectPackage = async (item) => {
-    const {name, type} = item
-    const foundPackage = store.getters.getPackages.find(el => el.name === name)
+  computed: {
+    ...mapGetters(['getViewedPackages']),
+
+    allPackages() {
+      return this.packages
+    },
+  }, // computed
+
+  methods: {
+    ...mapActions([
+      'openModal',
+      'addPackage',
+      'setSelectedPackage',
+      'showLoader',
+      'hideLoader'
+    ]),
+    ...mapActions('api', [
+      'apiGetAllPackages',
+      'apiGetGHPackageByName',
+      'apiGetNPMPackageByName',
+    ]),
+
+    async loadAllPackages() {
+      this.packages = await this.apiGetAllPackages()
+    },
+
+    async definePackageRequest (packageType, packageName) {
+      return packageType === 'gh'
+        ? this.apiGetGHPackageByName(packageName)
+        : this.apiGetNPMPackageByName(packageName)
+    },
+
+    async handleSelectPackage (item) {
+    const { name, type } = item
+    const foundPackage = this.getViewedPackages.find(el => el.name === name)
+    this.showLoader()
 
     if (foundPackage) {
-      store.dispatch('setSelectedPackage', foundPackage)
+      this.setSelectedPackage(foundPackage)
     } else {
-      const request = `https://data.jsdelivr.com/v1/stats/packages/${type}/${name}`
-      const res = await fetch(request)
-      const data = await res.json()
+      const data = await this.definePackageRequest(type, name)
       const dataWithName = {...data, name}
-      store.dispatch('addPackage', dataWithName)
-      store.dispatch('setSelectedPackage', dataWithName)
+      this.addPackage(dataWithName)
+      this.setSelectedPackage(dataWithName)
     }
-    store.dispatch('openModal', APP_MODALS.packageInfoModal)
+    this.hideLoader()
+    this.openModal(APP_MODALS.packageInfoModal)
   }
-       const search = ref('')
-       const headers = [
-          {
-            align: 'start',
-            key: 'name',
-            title: 'Name',
-          },
-          { key: 'type', title: 'Type' },
-        ]
+  }, // methods
+}
 </script>
 
 <style scoped lang="scss">

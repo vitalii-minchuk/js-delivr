@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { PACKAGES_URLS } from '@/constants'
 
-const JSDELIVR_API_HOST = process.env.VUE_APP_JSDELIVR_BASE_URL
+const JSDELIVR_API_HOST = import.meta.env.VITE_JSDELIVR_BASE_URL
 
 export default {
   namespaced: true,
@@ -12,8 +12,35 @@ export default {
     }),
   },
   actions: {
-    apiGetAllPackages({ state }) {
-      return state.axiosJSDelivr.get(PACKAGES_URLS.allPackages)
+    apiGetAllPackages({ state, dispatch }) {
+      return state.axiosJSDelivr
+        .get(PACKAGES_URLS.allPackages)
+        .then(resp => {
+          return resp.data
+        })
+        .catch(error => {
+          dispatch('errorHandler', error)
+        })
     },
+    apiGetGHPackageByName({ state, dispatch }, packageName) {
+      return state.axiosJSDelivr
+        .get(`${PACKAGES_URLS.ghPackages}/${packageName}`)
+        .then(resp => {
+          return resp.data
+        })
+        .catch(error => {
+          dispatch('errorHandler', error)
+        })
+    },
+    apiGetNPMPackageByName({ state, dispatch }, packageName) {
+      return state.axiosJSDelivr
+        .get(`${PACKAGES_URLS.npmPackages}/${packageName}`)
+        .then(resp => {
+          return resp.data
+        })
+        .catch(error => {
+          dispatch('errorHandler', error)
+        })
+    }
   },
 }

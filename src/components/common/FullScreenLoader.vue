@@ -1,22 +1,33 @@
 <template>
-  <div class="backdrop" :style="{zIndex: Z_INDEXES.loaderBackdrop }" v-if="isLoading">
+  <div v-if="getIsLoading" class="backdrop" :style="{ zIndex }">
     <v-progress-circular
     indeterminate
     color="white"
-    ></v-progress-circular>
+    />
   </div>
 </template>
 
-<script setup>
-  import { useStore } from 'vuex'
-  import { computed } from 'vue';
+<script>
+  import { mapGetters } from 'vuex'
   import { Z_INDEXES } from '@/constants'
 
-  const store = useStore()
-  const isLoading = computed(() => store.getters.getIsLoading)
+  export default {
+    name: 'FullScreenLoader',
+
+    data() {
+      return {
+        zIndex: Z_INDEXES.loaderBackdrop
+      }
+    },
+
+    computed: {
+      ...mapGetters(['getIsLoading']),
+    }
+  }
+
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .backdrop {
     position: fixed;
     top: 0;

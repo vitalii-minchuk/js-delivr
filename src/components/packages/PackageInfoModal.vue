@@ -2,7 +2,7 @@
   import { useStore } from 'vuex'
   import { computed } from 'vue';
   import { APP_MODALS } from '@/constants';
-  import {getHitsChartData} from '@/utils'
+  import { getBarChartData } from '@/utils'
   import SimpleChart from '@/components/common/SimpleChart.vue'
 
   const store = useStore()
@@ -22,10 +22,10 @@
 
 <template>
     <v-dialog
+      v-if="store.getters.getPackageInfoModal"
       v-model="store.getters.getPackageInfoModal"
       persistent
       width="auto"
-      v-if="store.getters.getPackageInfoModal"
     >
       <v-card>
         <v-card-title class="text-h5">
@@ -33,7 +33,7 @@
         </v-card-title>
         <v-card-text>{{ `Link: ${selectedPackage?.links?.self}` }}</v-card-text>
         <v-card-item>
-          <SimpleChart :chartData="getHitsChartData(hits)" />
+          <SimpleChart :chartData="getBarChartData(hits, 'Hits')" />
         </v-card-item>
         <v-card-actions>
           <v-spacer />

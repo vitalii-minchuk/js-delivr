@@ -1,4 +1,4 @@
-export const getHitsChartData = (hits, label = '', backgroundColor = 'skyblue') => {
+export const getBarChartData = (hits, label = '', backgroundColor = 'skyblue') => {
   const result = {
     labels: [],
     datasets: [

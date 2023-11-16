@@ -1,4 +1,5 @@
 import { createStore } from 'vuex'
+
 import apiModule from './api'
 import { APP_MODALS } from '@/constants'
 
@@ -11,7 +12,7 @@ const store = createStore({
       [APP_MODALS.packageInfoModal]: false
     },
     isLoading: false,
-    packages: [],
+    viewedPackages: [],
     selectedPackage: null
   },
   getters: {
@@ -24,8 +25,8 @@ const store = createStore({
     getPackageInfoModal (state) {
       return state.modals.packageInfoModal
     },
-    getPackages (state) {
-      return state.packages
+    getViewedPackages (state) {
+      return state.viewedPackages
     },
     getSelectedPackage (state) {
       return state.selectedPackage
@@ -38,35 +39,56 @@ const store = createStore({
     closeModal (state, modal) {
       state.modals[modal] = false
     },
+    showLoader (state) {
+      state.isLoading = true
+    },
+    hideLoader (state) {
+      state.isLoading = false
+    },
     addPackage (state, newPackage) {
-      const isAlreadyViewed = state.packages.some(el => el.name === newPackage.name)
+      const isAlreadyViewed = state.viewedPackages.some(el => el.name === newPackage.name)
       if (isAlreadyViewed) return
 
-      state.packages.push(newPackage)
+      state.viewedPackages.push(newPackage)
     },
     setSelectedPackage (state, selectedPackage) {
       state.selectedPackage = selectedPackage
     },
     deletePackage (state) {
       const selectedPackageName = state.selectedPackage?.name
-      state.packages = state.packages.filter(el => el.name !== selectedPackageName)
+      state.viewedPackages = state.viewedPackages.filter(el => el.name !== selectedPackageName)
     }
   },
   actions: {
-    openModal (context, modal) {
-      context.commit('openModal', modal)
+    errorHandler({ commit }, error) {
+      console.error(`Error: $${error.message}`)
+      // TODO handle errors
+      const errObj = {
+        message: 'Something went wrong',
+        code: error.response.status,
+      }
+      commit('setError', errObj)
     },
-    closeModal (context, modal) {
-      context.commit('closeModal', modal)
+    openModal ({ commit }, modal) {
+      commit('openModal', modal)
     },
-    addPackage (context, newPackage) {
-      context.commit('addPackage', newPackage)
+    closeModal ({ commit }, modal) {
+      commit('closeModal', modal)
     },
-    setSelectedPackage (context, selectedPackage) {
-      context.commit('setSelectedPackage', selectedPackage)
+    showLoader ({ commit }) {
+      commit('showLoader')
     },
-    deletePackage (context) {
-      context.commit('deletePackage')
+    hideLoader ({ commit }) {
+      commit('hideLoader')
+    },
+    addPackage ({ commit }, newPackage) {
+      commit('addPackage', newPackage)
+    },
+    setSelectedPackage ({ commit }, selectedPackage) {
+      commit('setSelectedPackage', selectedPackage)
+    },
+    deletePackage ({ commit }) {
+      commit('deletePackage')
     }
   },
 })
