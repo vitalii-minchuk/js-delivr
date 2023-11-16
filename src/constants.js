@@ -5,3 +5,7 @@ export const PACKAGES_URLS = {
 export const APP_MODALS = {
   packageInfoModal: 'packageInfoModal'
 }
+
+export const Z_INDEXES = {
+  loaderBackdrop: 100
+}

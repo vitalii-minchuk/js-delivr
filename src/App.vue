@@ -9,6 +9,7 @@
       </v-container>
     </v-main>
   </v-app>
+  <FullScreenLoader />
   <PackageInfoModal />
 </template>
 
@@ -17,4 +18,5 @@ import TheFooter from '@/components/layout/TheFooter'
 import PackagesTable from '@/components/packages/PackagesTable.vue'
 import RecentlyViewedPackages from '@/components/packages/RecentlyViewedPackages.vue'
 import PackageInfoModal from '@/components/packages/PackageInfoModal.vue'
+import FullScreenLoader from '@/components/common/FullScreenLoader.vue'
 </script>

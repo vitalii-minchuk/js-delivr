@@ -10,10 +10,14 @@ const store = createStore({
     modals: {
       [APP_MODALS.packageInfoModal]: false
     },
+    isLoading: false,
     packages: [],
     selectedPackage: null
   },
   getters: {
+    getIsLoading (state) {
+      return state.isLoading
+    },
     getModals (state) {
       return state.modals
     },
@@ -35,7 +39,7 @@ const store = createStore({
       state.modals[modal] = false
     },
     addPackage (state, newPackage) {
-      const isAlreadyViewed = state.packages.some(el => el.name === newPackage?.name)
+      const isAlreadyViewed = state.packages.some(el => el.name === newPackage.name)
       if (isAlreadyViewed) return
 
       state.packages.push(newPackage)

@@ -1,10 +1,13 @@
 <script setup>
   import { useStore } from 'vuex'
   import { computed } from 'vue';
-import { APP_MODALS } from '@/constants';
+  import { APP_MODALS } from '@/constants';
+  import {getHitsChartData} from '@/utils'
+  import SimpleChart from '@/components/common/SimpleChart.vue'
 
   const store = useStore()
-  const selectedPackage = computed(() => store.getters.getSelectedPackage )
+  const selectedPackage = computed(() => store.getters.getSelectedPackage)
+  const hits = computed(() => store.getters.getSelectedPackage?.hits?.dates || null)
 
   const handleDeletePackage = () => {
     store.dispatch('deletePackage')
@@ -29,8 +32,11 @@ import { APP_MODALS } from '@/constants';
           {{ `Package: ${selectedPackage?.name}` }}
         </v-card-title>
         <v-card-text>{{ `Link: ${selectedPackage?.links?.self}` }}</v-card-text>
+        <v-card-item>
+          <SimpleChart :chartData="getHitsChartData(hits)" />
+        </v-card-item>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="red"
             variant="text"
