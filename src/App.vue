@@ -9,12 +9,25 @@
       </v-container>
     </v-main>
   </v-app>
+  <FullScreenLoader />
   <PackageInfoModal />
 </template>
 
-<script setup>
-import TheFooter from '@/components/layout/TheFooter'
-import PackagesTable from '@/components/packages/PackagesTable.vue'
-import RecentlyViewedPackages from '@/components/packages/RecentlyViewedPackages.vue'
-import PackageInfoModal from '@/components/packages/PackageInfoModal.vue'
+<script>
+import FullScreenLoader from '@/components/common/FullScreenLoader.vue'
+import PackageInfoModal from '@/components/packages/PackageInfoModal.vue';
+import RecentlyViewedPackages from '@/components/packages/RecentlyViewedPackages.vue';
+import PackagesTable from '@/components/packages/PackagesTable.vue';
+import TheFooter from '@/components/layout/TheFooter.vue';
+
+export default {
+    name: 'App',
+    components: {
+      FullScreenLoader,
+      PackageInfoModal,
+      RecentlyViewedPackages,
+      PackagesTable,
+      TheFooter
+  }
+}
 </script>

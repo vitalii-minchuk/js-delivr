@@ -1,9 +1,9 @@
 <template>
-  <v-container >
-    <h4>Viewed packages</h4>
+  <v-container v-if="store.getters.getViewedPackages.length">
+    <h4>Recently viewed packages</h4>
       <div class="chips-wrapper">
         <v-chip
-          v-for="singlePackage in store.getters.getPackages"
+          v-for="singlePackage in store.getters.getViewedPackages"
           :key="singlePackage.name"
           elevation="6" class="package-chip"
           @click="() => handleSelectPackage(singlePackage)"
@@ -33,5 +33,4 @@ import { useStore } from 'vuex'
   flex-wrap: wrap;
   margin-top: 20px;
 }
-
 </style>
